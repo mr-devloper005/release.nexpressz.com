@@ -1,44 +1,72 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
 import { SITE_CONFIG } from '@/lib/site-config'
 import { globalContent } from '@/editable/content/global.content'
-import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
 
 export function EditableFooter() {
   const year = new Date().getFullYear()
-  const { session, logout } = useEditableLocalAuthSession()
+  const primaryTask = SITE_CONFIG.tasks.find((task) => task.enabled)
+  const categories = [primaryTask?.label, 'Business', 'Editorial'].filter(Boolean) as string[]
 
   return (
-    <footer className="border-t-8 border-[var(--slot4-accent)] bg-black text-white">
-      <div className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.2fr_.7fr_.7fr]">
-          <div>
-            <Link href="/" className="editorial-brand text-5xl font-black text-[var(--slot4-accent)] sm:text-6xl">{SITE_CONFIG.name}</Link>
-            <p className="mt-6 max-w-xl text-sm leading-7 text-white/62">{globalContent.footer?.description || SITE_CONFIG.description}</p>
-            <form action="/signup" className="mt-8 flex max-w-xl border border-white/35">
-              <input name="email" type="email" placeholder="Email for newsroom updates" className="min-w-0 flex-1 bg-transparent px-4 py-4 text-sm outline-none placeholder:text-white/40" />
-              <button className="bg-[var(--slot4-accent)] px-5 text-xs font-black uppercase tracking-[.14em]">Subscribe</button>
-            </form>
+    <footer className="bg-white">
+      <section className="border-y border-[var(--slot4-line)] bg-[var(--slot4-panel-bg)]">
+        <div className="mx-auto max-w-[1280px] px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+          <div className="text-center">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--slot4-violet)]">Client voices</p>
+            <h2 className="mt-4 text-4xl font-black tracking-[-0.05em] text-[var(--slot4-page-text)] sm:text-5xl">
+              {SITE_CONFIG.name} helps your updates land with clarity
+            </h2>
           </div>
-          <div>
-            <h3 className="border-b border-white/25 pb-3 text-[10px] font-black uppercase tracking-[.22em] text-white/55">Explore</h3>
-            <div className="mt-4 grid gap-3">
-              <Link href="/search" className="group inline-flex items-center justify-between text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Archive<ArrowRight className="h-4 w-4" /></Link>
-            </div>
+          <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {[
+              ['Predictable coverage and a calmer publishing rhythm.', 'Editorial Lead, Consumer Brand'],
+              ['Distribution quality feels premium from the first draft.', 'Marketing Director, Services'],
+              ['Fast turnaround keeps launch timelines moving.', 'Growth Manager, SaaS'],
+              ['The format makes announcements easier to read and trust.', 'Comms Team, Studio'],
+            ].map(([quote, role]) => (
+              <article key={quote} className="rounded-[1.8rem] border border-[var(--slot4-line)] bg-white p-6 shadow-[0_12px_30px_rgba(107,116,69,0.08)]">
+                <p className="text-base leading-8 text-[var(--slot4-muted-text)]">"{quote}"</p>
+                <p className="mt-6 font-black text-[var(--slot4-page-text)]">{role.split(',')[0]}</p>
+                <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-[var(--slot4-violet)]">{role.split(',').slice(1).join(',').trim()}</p>
+              </article>
+            ))}
           </div>
+        </div>
+      </section>
+
+      <div className="mx-auto max-w-[1280px] px-4 py-10 sm:px-6 lg:px-8">
+        <div className="flex flex-col gap-8 border-b border-[var(--slot4-line)] pb-8 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h3 className="border-b border-white/25 pb-3 text-[10px] font-black uppercase tracking-[.22em] text-white/55">Publication</h3>
-            <div className="mt-4 grid gap-3">
-              <Link href="/about" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">About</Link>
-              <Link href="/contact" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Contact</Link>
-              {session ? <><Link href="/create" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Publish</Link><button onClick={logout} className="text-left text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Logout</button></> : <><Link href="/login" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Log in</Link><Link href="/signup" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Subscribe</Link></>}
-            </div>
+            <Link href="/" className="editorial-brand text-4xl font-semibold text-[var(--slot4-page-text)]">
+              {SITE_CONFIG.name}
+            </Link>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--slot4-muted-text)]">
+              {globalContent.footer.description || SITE_CONFIG.description}
+            </p>
+            <p className="mt-6 text-sm text-[var(--slot4-muted-text)]">
+              © {year} {SITE_CONFIG.name}. All rights reserved.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-5 text-sm text-[var(--slot4-page-text)]">
+            <Link href="/about" className="hover:text-[var(--slot4-violet)]">About</Link>
+            <Link href="/contact" className="hover:text-[var(--slot4-violet)]">Contact</Link>
+            <Link href="/about" className="hover:text-[var(--slot4-violet)]">Privacy</Link>
+            <Link href="/about" className="hover:text-[var(--slot4-violet)]">Terms</Link>
+          </div>
+        </div>
+
+        <div className="pt-7">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-[var(--slot4-soft-muted-text)]">Categories</p>
+          <div className="mt-4 flex flex-wrap gap-5 text-sm text-[var(--slot4-muted-text)]">
+            {categories.map((item) => (
+              <span key={item}>∨ {item}</span>
+            ))}
           </div>
         </div>
       </div>
-      <div className="border-t border-white/20 px-4 py-5 text-center text-[10px] font-black uppercase tracking-[.18em] text-white/45">© {year} {SITE_CONFIG.name}. Independent media and public information.</div>
     </footer>
   )
 }
